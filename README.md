@@ -16,8 +16,8 @@ Locating fellow students in the same module and finding project group mates or s
 - As a student who wants to find groupmates of a module, I want to be able to match with others with the same need without having to manually search by myself.
 - As a student who wants to find a study buddy, I want to be able to match with others based on major and other preferences (gender, interests, etc.).
 
-**Features -- A Reddit Bot**
+**Features -- A Reddit Bot and a Telegram Bot**
 
 - provides a link to the telegram group chat under posts in which students are looking for the chatroom of a specific module. 
-- matches students who are looking for project group mates together based on their module code and preferences. 
-- matches students who are looking for study buddies together based on their major and preferences.
+- matches students who are looking for project group mates together based on their module code and preferences by using the telegram bot. 
+- matches students who are looking for study buddies together based on their major and preferences by using the telegram bot.
