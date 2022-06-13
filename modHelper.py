@@ -7,7 +7,7 @@ import requests
 import os
 
 reddit = praw.Reddit('modHelper')
-subreddit = reddit.subreddit("pythonforengineers")
+subreddit = reddit.subreddit("pythonforengineers") #currently we are testing our bot in this subreddit, after completed we will move to r/nus
 
 while True:
     
@@ -23,7 +23,7 @@ while True:
         if sub.id not in archive:
             for com in sub.comments:
                 if re.search("u/modHelper", com.body, re.IGNORECASE):
-                    if re.search("tele", com.body, re.IGNORECASE):
+                    if re.search("tele", com.body, re.IGNORECASE): #this part need to collaborate with TeleNUS side
                         module_code = com.body.split()[-1]
                         html_content = requests.request("GET", "https://telenus.nusmods.com/", verify = False).text
                         matches = re.findall(module_code, html_content)
@@ -32,16 +32,12 @@ while True:
                           com.reply(body = noTele_replyMsg)
                         else:
                           com.reply(body = module_code)
-                        #com.reply(body = "https://telenus.nusmods.com/ ^(This action is performed by a bot)")
 
-
-                        
-                    '''
                     elif re.search("mate", com.body, re.IGNORECASE):
-                        pass
-                    '''
+                        com.reply(body = "You may wish to find your ideal groupmate in our telegram bot via this link: http://t.me/ModHelper_Bot ^(This action is performed by a bot)")
 
-
+                    elif re.search("buddy", com.body, re.IGNORECASE):
+                        com.reply(body = "You may wish to find your ideal study buddy in our telegram bot via this link: http://t.me/ModHelper_Bot ^(This action is performed by a bot)")
                     
                     archive.append(sub.id)
                 
