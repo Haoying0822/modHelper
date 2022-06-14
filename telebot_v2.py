@@ -35,6 +35,20 @@ def echo(message):
 
     bot.send_message(user_id, m_start, reply_markup=menu)
 
+@bot.callback_query_handler(func=lambda call: True)
+def echo(call):
+    if call.data == "module_mate":
+        user_id = call.message.chat.id
+        bot.send_message(user_id, "Please send your module code")
+
+    if call.data == "study_buddy":
+        user_id = call.message.chat.id
+        bot.send_message(user_id, "Please select your faculty")
+    
+    if call.data == "resume_chat":
+        user_id = call.message.chat.id
+        bot.send_message(user_id, "Please send the user ID") 
+
 if __name__ == "__main__":
     #recovery_data()
     bot.stop_polling()
