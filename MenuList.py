@@ -1,4 +1,5 @@
 from telebot import types
+from Messages_v1 import *
 
 def start_menu():
     callback1 = types.InlineKeyboardButton(
@@ -9,68 +10,37 @@ def start_menu():
         text = "Find Study Buddy", callback_data = "study_buddy"
     )
 
+    """
     callback3 = types.InlineKeyboardButton(
         text = "Start a chat with user ID", callback_data = "resume_chat"
     )
+    """
 
     menu = types.InlineKeyboardMarkup()
     menu.add(callback1)
     menu.add(callback2)
-    menu.add(callback3)
+    #menu.add(callback3)
 
     return menu
 
 def faculty_menu():
-    Biz = types.InlineKeyboardButton(
-        text = "Business School", callback_data= "biz"
-    )
 
-    FASS = types.InlineKeyboardButton(
-        text = "College of Humanities and Sciences - FASS", callback_data = "fass"
-    )
-
-    Fos = types.InlineKeyboardButton(
-        text = "College of Humanities and Sciences - FoS", callback_data = "fos"
-    )
-
-    Soc = types.InlineKeyboardButton(
-        text = "School of Computing", callback_data = "soc"
-    )
-
-    Fod = types.InlineKeyboardButton(
-        text = "Faculty of Dentistry", callback_data = "fod"
-    )
-
-    CDE = types.InlineKeyboardButton(
-        text = "College of Design and Engineering", callback_data = "cde"
-    )
-
-    Med = types.InlineKeyboardButton(
-        text = "Yong Loo Lin School of Medicine", callback_data = "med"
-    )
-
-    Fol = types.InlineKeyboardButton(
-        text = "Faculty of Law", callback_data = "fol"
-    )
-
-    Music = types.InlineKeyboardButton(
-        text = "Yong Siew Toh Conservatory of Music", callback_data = "music"
-    )
-
-    Nur = types.InlineKeyboardButton(
-        text = "Alice Lee Centre for Nursing Studies", callback_data = "nur"
-    )
-
-    menu = types.InlineKeyboardMarkup()
-    menu.add(Nur)
-    menu.add(Biz)
-    menu.add(CDE)
-    menu.add(FASS)
-    menu.add(Fos)
-    menu.add(Fod)
-    menu.add(Fol)
-    menu.add(Soc)
-    menu.add(Med)
-    menu.add(Music)
+    menu = types.ReplyKeyboardMarkup(one_time_keyboard = True)
+    menu.add("Alice Lee Centre for Nursing Studies")
+    menu.add("Business School")
+    menu.add("College of Design and Engineering")
+    menu.add("College of Humanities and Sciences - FASS")
+    menu.add("College of Humanities and Sciences - FoS")
+    menu.add("Faculty of Dentistry")
+    menu.add("Faculty of Law")
+    menu.add("School of Computing")
+    menu.add("Yong Loo Lin School of Medicine")
+    menu.add("Yong Siew Toh Conservatory of Music")
 
     return menu
+
+def generate_markup():
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=False, resize_keyboard=True)
+    markup.add(like_str)
+    markup.add(dislike_str)
+    return markup
