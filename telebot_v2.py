@@ -4,7 +4,7 @@ from telebot import types
 from Messages_v1 import *
 from MenuList import *
 
-TOKEN = "5458457619:AAFzvBHIMTRzze_G44Ktx6lvxt77vdYAozw"
+TOKEN = "YOUR TOKEN HERE"
 bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands = ["start"])
