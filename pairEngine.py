@@ -8,6 +8,9 @@ from BinaryTree import BinaryTree
 Base = declarative_base()
 communications = {}
 
+in_module_users = 0
+out_module_users = 0
+
 class MUser(Base): #module mate
     __tablename__ = "MUser"
 
@@ -32,11 +35,20 @@ session = sessionmaker(bind=engine)
 
 def add_module_users(chat, mod):
     global module_users
+    global in_module_users
+    global out_module_users
     user_id = chat.id
+    user_name = chat.username
 
     if user_id in module_users:
         return
-    module_users[user_id] = {"state": 0, "ID": user_id, "Module": mod, "Username": chat.username}
+    
+    if in_module_users >= out_module_users:
+        module_users[user_id] = {"state": 0, "ID": user_id, "Username": user_name}
+        out_module_users = out_module_users + 1
+    elif in_module_users < out_module_users:
+        module_users[user_id] = {"state": 1, "ID": user_id, "Username": user_name}
+        in_module_users = in_module_users + 1
 
     s = session()
     if len(s.query(MUser).filter(MUser.id == user_id).all()) > 0:
@@ -52,7 +64,7 @@ def add_module_users(chat, mod):
 
 def find_module_user(mod):
     s = session()
-    if len(s.query(MUser).filter(MUser.module == mod).all()) > 0:
+    if len(s.query(MUser).filter(MUser.module == mod).all()) > 1:
         s.commit()
         s.close()
         return True
@@ -96,23 +108,23 @@ def delete_info(user_id):
 
 
 def add_communications(user_id, user_to_id):
-    global free_users
+    global module_users
 
     communications[user_id] = {
         "UserTo": user_to_id,
-        "UserName": free_users[user_to_id]["UserName"],
+        "Username": module_users[user_to_id]["Username"],
         "like": False,
     }
     communications[user_to_id] = {
         "UserTo": user_id,
-        "UserName": free_users[user_id]["UserName"],
+        "Username": module_users[user_id]["Username"],
         "like": False,
     }
 
     print(communications[user_id], " ", communications[user_to_id])
 
-    free_users.delete(user_id)
-    free_users.delete(user_to_id)
+    module_users.delete(user_id)
+    module_users.delete(user_to_id)
 
     s = session()
 
