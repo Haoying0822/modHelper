@@ -1,5 +1,5 @@
 from telebot import types
-from Messages_v1 import *
+from Messages_v2 import *
 
 def start_menu():
     callback1 = types.InlineKeyboardButton(
