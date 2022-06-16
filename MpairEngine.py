@@ -27,7 +27,7 @@ class Contact(Base):
     userToID = Column(Integer, nullable=False)
 
 module_users = BinaryTree()
-buddy_users = BinaryTree()
+
 
 engine = create_engine("sqlite:///Module_Data.db")
 Base.metadata.create_all(bind=engine)
@@ -42,12 +42,12 @@ def add_module_users(chat, mod):
 
     if user_id in module_users:
         return
-    
+   
     if in_module_users >= out_module_users:
-        module_users[user_id] = {"state": 0, "ID": user_id, "Username": user_name}
+        module_users[user_id] = {"state": 0, "ID": user_id, "Username": user_name, "Module": mod}
         out_module_users = out_module_users + 1
     elif in_module_users < out_module_users:
-        module_users[user_id] = {"state": 1, "ID": user_id, "Username": user_name}
+        module_users[user_id] = {"state": 1, "ID": user_id, "Username": user_name, "Module": mod}
         in_module_users = in_module_users + 1
 
     s = session()
