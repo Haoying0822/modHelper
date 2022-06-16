@@ -4,9 +4,9 @@ import telebot
 from Messages_v1 import *
 from MenuList import *
 from ModuleList import *
-from pairEngine import *
+from MpairEngine import *
 
-TOKEN = "TOKEN"
+TOKEN = "5458457619:AAFzvBHIMTRzze_G44Ktx6lvxt77vdYAozw"
 bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands = ["start"])
@@ -25,6 +25,12 @@ def echo(call):
     user_id = call.message.chat.id
     bot.send_message(user_id, "Please send your module code")
 
+
+@bot.message_handler(func = lambda message: message.text in facultyList)
+def echo(message):
+    user_id = message.chat.id
+    bot.send_message(user_id, "YAY the bot works!!!")
+
 @bot.message_handler(func = lambda message: message.text in moduleList)
 def echo(message):
     user_id = message.chat.id
@@ -40,15 +46,16 @@ def echo(message):
     
     if module_users[user_id]["state"] == 0:
         bot.send_message(user_id, m_is_not_free_users)
-        return
+        return    
 
     if find_module_user(mod):
         #successfully find
         print("found")
         for user in module_users:
             if user["Module"] == mod:
-                user_to_id = user["ID"]
-                break
+                if user["state"] == 0:
+                    user_to_id = user["ID"]
+                    break
     
     if user_to_id is None:
         bot.send_message(user_id, m_is_not_free_users)
@@ -77,7 +84,7 @@ def echo(message):
     if message.chat.id in communications:
 
         bot.send_message(
-            communications[user_id]["UserTo"], m_disconnect_user, reply_markup=menu
+            communications[user_id]["UserTo"], m_disconnect_user, reply_markup = menu
         )
 
         tmp_id = communications[user_id]["UserTo"]
@@ -94,7 +101,7 @@ def echo(message):
     user_id = message.chat.id
 
     if user_id not in communications:
-        bot.send_message(user_id, m_failed, reply_markup=types.ReplyKeyboardRemove())
+        bot.send_message(user_id, m_failed, reply_markup = types.ReplyKeyboardRemove())
         return
 
     user_to_id = communications[user_id]["UserTo"]
@@ -185,14 +192,8 @@ def echo(call):
     if call.data == "study_buddy":
         menu = faculty_menu()
         bot.send_message(user_id, "Please select your faculty", reply_markup = menu)
-    
-    #if call.data == "resume_chat":
-        #bot.send_message(user_id, "Please send the user ID")
 
-@bot.message_handler(func = lambda message: message.text in facultyList)
-def echo(message):
-    user_id = message.chat.id
-    bot.send_message(user_id, "YAY the bot works!!!")
+
 
 if __name__ == "__main__":
     #recovery_data()
