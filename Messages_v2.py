@@ -3,7 +3,7 @@ m_start = "Hello, welcome to modHelper. This is a bot aiming to help NUS student
 m_chat_start = " 💯  Welcome to modHelper's matching session! \n\n 🖥  We hope you find a satisfactory mate/buddy here! \n\n ⚠️  To protect your safety, all chats are to remain anonymous and usernames will only be revealed when both parties agree! \n\n ⏩  To start searching for a match, please press the button New Chat"
 
 m_is_not_free_users = (
-    " 😔  Sorry, we have yet to find a match based on your preference, yet your perfect match might be just around the corner! Please keep checking your notifs and come back later. "
+    " 😔  Sorry, we have yet to find a match based on your preference, yet your perfect match might be just around the corner! To keep searching, please check your notifs and come back later. \nTo exit this search, please type command /stop. "
 )
 
 m_is_connect = " 👀 A match is found! Now you are in the chat with your match, please send your messages!"
@@ -12,7 +12,7 @@ m_play_again = " 🧐 Still looking for a match for other modules? Restart the s
 
 m_is_not_user_name = " ☹️ Sorry, we are unable to facilitate your matches if you do not have a username. "
 
-m_good_bye = " 😢 Sorry, your match has left the chat. Better luck next time!"
+m_good_bye = " You have left the chat."
 
 m_disconnect_user = "😨 Sorry, the connection was lost."
 
@@ -28,7 +28,9 @@ m_dislike_user_to = (
 
 m_send_some_messages = "🙈 Our bot could not forward the message. Please try something else. "
 
-m_has_not_dialog = "😞 You are not in a chat yet. We will notify you once a match is found! "
+m_invalid_command = "😞 Sorry, we cannot recognise the content you have entered. "
+
+m_start_again = "To start a search, please select from below. "
 
 dislike_str = "⛔ Exit"
 
