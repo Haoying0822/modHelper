@@ -3,19 +3,21 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 
+from Option import *
 from BinaryTree import BinaryTree
 
 Base = declarative_base()
+bot_users = BinaryTree()
 communications = {}
 
-in_module_users = 0
-out_module_users = 0
+in_users = [0] * 10000
+out_users = [0] * 10000
 
-class MUser(Base): #module mate
-    __tablename__ = "MUser"
+class User(Base): #module mate
+    __tablename__ = "User"
 
     id = Column(Integer, primary_key = True)
-    module = Column(String, nullable = False)
+    option = Column(String, nullable = False)
     username = Column(String, nullable=False)
     like = Column(Boolean, nullable=False)
     status = Column(Integer, nullable=False)
@@ -26,45 +28,49 @@ class Contact(Base):
     userID = Column(Integer, primary_key=True)
     userToID = Column(Integer, nullable=False)
 
-module_users = BinaryTree()
 
+engine = create_engine("sqlite:///Data.db")
+Base.metadata.create_all(bind = engine)
+session = sessionmaker(bind = engine)
 
-engine = create_engine("sqlite:///Module_Data.db")
-Base.metadata.create_all(bind=engine)
-session = sessionmaker(bind=engine)
-
-def add_module_users(chat, mod):
-    global module_users
-    global in_module_users
-    global out_module_users
+def add_users(chat, opt):
+    global bot_users
+    global in_users
+    global out_users
     user_id = chat.id
     user_name = chat.username
+    opt_index = option_dict[opt]
 
-    if user_id in module_users:
+    if user_id in bot_users:
+        print("alr in list")
         return
    
-    if in_module_users >= out_module_users:
-        module_users[user_id] = {"state": 0, "ID": user_id, "Username": user_name, "Module": mod}
-        out_module_users = out_module_users + 1
-    elif in_module_users < out_module_users:
-        module_users[user_id] = {"state": 1, "ID": user_id, "Username": user_name, "Module": mod}
-        in_module_users = in_module_users + 1
+    if in_users[opt_index] >= out_users[opt_index]:
+        bot_users[user_id] = {"state": 0, "ID": user_id, "Username": user_name, "Option": opt}
+        out_users[opt_index] = out_users[opt_index] + 1
+        print(user_name + " 0")
+    elif in_users[opt_index] < out_users[opt_index]:
+        bot_users[user_id] = {"state": 1, "ID": user_id, "Username": user_name, "Option": opt}
+        in_users[opt_index] = in_users[opt_index] + 1
+        print(user_name + " 1")
 
     s = session()
-    if len(s.query(MUser).filter(MUser.id == user_id).all()) > 0:
-        s.query(MUser).filter(MUser.id == user_id).update({"status": 0})
+    if len(s.query(User).filter(User.id == user_id).all()) > 0:
+        s.query(User).filter(User.id == user_id).update({"status": 0, "option": opt})
 
         s.commit()
         s.close()
         return
     
-    s.add(MUser(id = user_id, module = mod, username = chat.username, like = False, status = 0))
+    s.add(User(id = user_id, option = opt, username = chat.username, like = False, status = 0))
     s.commit()
     s.close()
 
-def find_module_user(mod):
+    print("added")
+
+def find_user(opt):
     s = session()
-    if len(s.query(MUser).filter(MUser.module == mod).all()) > 1:
+    if len(s.query(User).filter(User.option == opt).all()) > 1:
         s.commit()
         s.close()
         return True
@@ -73,13 +79,13 @@ def find_module_user(mod):
         s.close()
         return False
 
-def delete_Muser_from_db(user_id):
-    if user_id in module_users:
-        module_users.delete(user_id)
+def delete_user_from_db(user_id):
+    if user_id in bot_users:
+        bot_users.delete(user_id)
 
     s = session()
 
-    s.query(MUser).filter(MUser.id == user_id).delete()
+    s.query(User).filter(User.id == user_id).delete()
 
     s.commit()
     s.close()
@@ -100,38 +106,38 @@ def delete_info(user_id):
         s.query(Contact).filter(Contact.userID == tmp_id).delete()
     s.commit()
 
-    s.query(MUser).filter(MUser.id == user_id).update({"status": 3, "like": False})
-    s.query(MUser).filter(MUser.id == tmp_id).update({"status": 3, "like": False})
+    s.query(User).filter(User.id == user_id).update({"status": 3, "like": False})
+    s.query(User).filter(User.id == tmp_id).update({"status": 3, "like": False})
 
     s.commit()
     s.close()
 
 
 def add_communications(user_id, user_to_id):
-    global module_users
+    global bot_users
 
     communications[user_id] = {
         "UserTo": user_to_id,
-        "Username": module_users[user_to_id]["Username"],
+        "Username": bot_users[user_to_id]["Username"],
         "like": False,
     }
     communications[user_to_id] = {
         "UserTo": user_id,
-        "Username": module_users[user_id]["Username"],
+        "Username": bot_users[user_id]["Username"],
         "like": False,
     }
 
     print(communications[user_id], " ", communications[user_to_id])
 
-    module_users.delete(user_id)
-    module_users.delete(user_to_id)
+    bot_users.delete(user_id)
+    bot_users.delete(user_to_id)
 
     s = session()
 
-    s.query(MUser).filter(MUser.id == user_id).update({"status": 1})
-    s.query(MUser).filter(MUser.id == user_to_id).update({"status": 1})
+    s.query(User).filter(User.id == user_id).update({"status": 1})
+    s.query(User).filter(User.id == user_to_id).update({"status": 1})
 
-    s.add(Contact(userID=user_id, userToID=user_to_id))
+    s.add(Contact(userID = user_id, userToID = user_to_id))
 
     s.commit()
     s.close()
@@ -142,8 +148,8 @@ def recovery_data():
     s = session()
 
     for i in s.query(Contact).all():
-        first = s.query(MUser).filter(MUser.id == i.userID).first()
-        second = s.query(MUser).filter(MUser.id == i.userToID).first()
+        first = s.query(User).filter(User.id == i.userID).first()
+        second = s.query(User).filter(User.id == i.userToID).first()
 
         communications[i.userID] = {
             "UserTo": second.id,
@@ -156,8 +162,8 @@ def recovery_data():
             "like": first.like,
         }
 
-    for i in s.query(MUser).filter(MUser.status == 0).all():
-        add_module_users(user_chat_id=i.id, username=i.username)
+    for i in s.query(User).filter(User.status == 0).all():
+        add_users(user_chat_id = i.id, username=i.username)
 
     s.close()
 
@@ -166,6 +172,6 @@ def update_user_like(user_id):
     communications[user_id]["like"] = True
 
     s = session()
-    s.query(MUser).filter(MUser.id == user_id).update({"like": True})
+    s.query(User).filter(User.id == user_id).update({"like": True})
     s.commit()
     s.close()
