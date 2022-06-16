@@ -6,7 +6,7 @@ from MenuList import *
 from ModuleList import *
 from MpairEngine import *
 
-TOKEN = "5458457619:AAFzvBHIMTRzze_G44Ktx6lvxt77vdYAozw"
+TOKEN = "YOUR TOKEN HERE"
 bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands = ["start"])
