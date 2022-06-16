@@ -1,10 +1,10 @@
 from certifi import contents
 import telebot
 
-from Messages_v1 import *
+from Messages_v2 import *
 from MenuList import *
-from ModuleList import *
-from MpairEngine import *
+from Option import *
+from pairEngine import *
 
 TOKEN = "YOUR TOKEN HERE"
 bot = telebot.TeleBot(TOKEN)
@@ -18,41 +18,43 @@ def echo(message):
 
     bot.send_message(user_id, m_start, reply_markup=menu)
 
-#Match module mate
 
-@bot.callback_query_handler(func = lambda call: call.data == "module_mate")
+@bot.callback_query_handler(func = lambda call: True)
 def echo(call):
     user_id = call.message.chat.id
-    bot.send_message(user_id, "Please send your module code")
+
+    if call.data == "module_mate":
+        bot.send_message(user_id, "Please send your module code")
+
+    if call.data == "study_buddy":
+        menu = faculty_menu()
+        bot.send_message(user_id, "Please select your faculty", reply_markup = menu)
 
 
-@bot.message_handler(func = lambda message: message.text in facultyList)
+@bot.message_handler(func = lambda message: message.text in option)
 def echo(message):
     user_id = message.chat.id
-    bot.send_message(user_id, "YAY the bot works!!!")
-
-@bot.message_handler(func = lambda message: message.text in moduleList)
-def echo(message):
-    user_id = message.chat.id
-    mod = message.text
+    opt = message.text
     user_to_id = None
 
-    add_module_users(message.chat, mod)
+    add_users(message.chat, opt)
 
-    if not find_module_user(mod):
-        print("no mod user")
+
+    if not find_user(opt):
         bot.send_message(user_id, m_is_not_free_users)
+        print("not enough user")
         return
     
-    if module_users[user_id]["state"] == 0:
+    if bot_users[user_id]["state"] == 0:
         bot.send_message(user_id, m_is_not_free_users)
+        print("matching failed")
         return    
 
-    if find_module_user(mod):
+    if find_user(opt):
         #successfully find
         print("found")
-        for user in module_users:
-            if user["Module"] == mod:
+        for user in bot_users:
+            if user["Option"] == opt:
                 if user["state"] == 0:
                     user_to_id = user["ID"]
                     break
@@ -73,26 +75,10 @@ def connect_user(user_id):
     if user_id in communications:
         return True
     else:
-        bot.send_message(user_id, m_has_not_dialog)
+        bot.send_message(user_id, m_invalid_command)
+        bot.send_message(user_id, m_start_again, reply_markup = start_menu())
         return False
 
-@bot.message_handler(commands=["stop"])
-def echo(message):
-    menu = types.ReplyKeyboardRemove()
-    user_id = message.chat.id
-
-    if message.chat.id in communications:
-
-        bot.send_message(
-            communications[user_id]["UserTo"], m_disconnect_user, reply_markup = menu
-        )
-
-        tmp_id = communications[user_id]["UserTo"]
-        delete_info(tmp_id)
-
-    delete_Muser_from_db(user_id)
-
-    bot.send_message(user_id, m_good_bye)
 
 @bot.message_handler(
     func=lambda call: call.text == like_str or call.text == dislike_str
@@ -131,9 +117,28 @@ def echo(message):
     if flag:
         delete_info(user_to_id)
         menu = start_menu()
-        bot.send_message(user_id, m_play_again, reply_markup=menu)
-        bot.send_message(user_to_id, m_play_again, reply_markup=menu)
+        bot.send_message(user_id, m_play_again, reply_markup = menu)
+        bot.send_message(user_to_id, m_play_again, reply_markup = menu)
 
+@bot.message_handler(commands=["stop"])
+def echo(message):
+    menu = types.ReplyKeyboardRemove()
+    user_id = message.chat.id
+
+    if message.chat.id in communications:
+
+        bot.send_message(
+            communications[user_id]["UserTo"], m_disconnect_user, reply_markup = menu
+        )
+
+        tmp_id = communications[user_id]["UserTo"]
+        delete_info(tmp_id)
+
+    delete_user_from_db(user_id)
+
+    bot.send_message(user_id, m_good_bye)
+    menu = start_menu()
+    bot.send_message(user_id, m_play_again, reply_markup = menu)
 
 @bot.message_handler(
     content_types=["text", "sticker", "photo"]
@@ -163,8 +168,7 @@ def echo(message):
             and message.text != "/stop"
             and message.text != dislike_str
             and message.text != like_str
-            and message.text not in moduleList
-            and message.text not in facultyList
+            and message.text not in option
         ):
 
             if not connect_user(user_id):
@@ -182,20 +186,7 @@ def echo(message):
                 bot.send_message(user_id, m_send_some_messages)
 
 
-#Match study buddy
-
-
-@bot.callback_query_handler(func = lambda call: True)
-def echo(call):
-    user_id = call.message.chat.id
-
-    if call.data == "study_buddy":
-        menu = faculty_menu()
-        bot.send_message(user_id, "Please select your faculty", reply_markup = menu)
-
-
-
 if __name__ == "__main__":
-    #recovery_data()
+    recovery_data()
     bot.stop_polling()
     bot.polling(none_stop=True)
