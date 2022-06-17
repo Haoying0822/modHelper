@@ -33,12 +33,10 @@ engine = create_engine("sqlite:///Data.db")
 Base.metadata.create_all(bind = engine)
 session = sessionmaker(bind = engine)
 
-def add_users(chat, opt):
+def add_users(user_id, user_name, opt):
     global bot_users
     global in_users
     global out_users
-    user_id = chat.id
-    user_name = chat.username
     opt_index = option_dict[opt]
 
     if user_id in bot_users:
@@ -48,11 +46,11 @@ def add_users(chat, opt):
     if in_users[opt_index] >= out_users[opt_index]:
         bot_users[user_id] = {"state": 0, "ID": user_id, "Username": user_name, "Option": opt}
         out_users[opt_index] = out_users[opt_index] + 1
-        print(user_name + " 0")
+        print(user_name + " 0 " + opt)
     elif in_users[opt_index] < out_users[opt_index]:
         bot_users[user_id] = {"state": 1, "ID": user_id, "Username": user_name, "Option": opt}
         in_users[opt_index] = in_users[opt_index] + 1
-        print(user_name + " 1")
+        print(user_name + " 1 " + opt)
 
     s = session()
     if len(s.query(User).filter(User.id == user_id).all()) > 0:
@@ -62,7 +60,7 @@ def add_users(chat, opt):
         s.close()
         return
     
-    s.add(User(id = user_id, option = opt, username = chat.username, like = False, status = 0))
+    s.add(User(id = user_id, option = opt, username = user_name, like = False, status = 0))
     s.commit()
     s.close()
 
@@ -163,7 +161,7 @@ def recovery_data():
         }
 
     for i in s.query(User).filter(User.status == 0).all():
-        add_users(user_chat_id = i.id, username=i.username)
+        add_users(i.id, i.username, i.option)
 
     s.close()
 
