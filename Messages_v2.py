@@ -6,6 +6,8 @@ m_is_not_free_users = (
     " 😔  Sorry, we have yet to find a match based on your preference, yet your perfect match might be just around the corner! To keep searching, please check your notifs and come back later. \nTo exit this search, please type command /stop. "
 )
 
+m_clash = "You are currently in another session. To start a new matching, please press /stop to stop the ongoing session first."
+
 m_is_connect = " 👀 A match is found! Now you are in the chat with your match, please send your messages!"
 
 m_play_again = " 🧐 Still looking for a match for other modules? Restart the session again with a different module code! "
@@ -32,11 +34,11 @@ m_invalid_command = "😞 Sorry, we cannot recognise the content you have entere
 
 m_start_again = "To start a search, please select from below. "
 
-m_in_a_dialog = "😦 You are currently in a match. To start another session, please terminate this session first. \nPress the button below or type /stop to exit the current session."
+m_in_a_dialog = "😦 You are currently in a match. To start another session, please terminate this session first. \nPress the button below to choose either exchange the username or directly exit."
 
 dislike_str = "⛔ Exit"
 
 like_str = "😊 Match and send username"
 
 def m_all_like(x):
-    return "username : @" + str(x)
+    return "Successfully matched!\n" + "The username of your buddy : @" + str(x) + "\nThe chat session is ended."
