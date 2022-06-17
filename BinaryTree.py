@@ -117,11 +117,11 @@ class BinaryTree:
 
     def find_successor(self):
         successor = None
-        if self.hasRightChild():
+        if self.has_right_child():
             successor = self.rightChild.find_min()
         else:
             if self.parent:
-                if self.isLeftChild():
+                if self.is_left_child():
                     successor = self.parent
                 else:
                     self.parent.rightChild = None
@@ -131,25 +131,25 @@ class BinaryTree:
 
     def find_min(self):
         current = self
-        while current.hasLeftChild():
+        while current.has_left_child():
             current = current.leftChild
         return current
 
     def splice_out(self):
         if self.isLeaf():
-            if self.isLeftChild():
+            if self.is_left_child():
                 self.parent.leftChild = None
             else:
                 self.parent.rightChild = None
-        elif self.hasAnyChildren():
-            if self.hasLeftChild():
-                if self.isLeftChild():
+        elif self.has_any_children():
+            if self.has_left_child():
+                if self.is_left_child():
                     self.parent.leftChild = self.leftChild
                 else:
                     self.parent.rightChild = self.leftChild
                 self.leftChild.parent = self.parent
             else:
-                if self.isLeftChild():
+                if self.is_left_child():
                     self.parent.leftChild = self.rightChild
                 else:
                     self.parent.rightChild = self.rightChild
@@ -161,7 +161,7 @@ class BinaryTree:
                 current_node.parent.leftChild = None
             else:
                 current_node.parent.rightChild = None
-        elif current_node.hasBothChildren():  # interior
+        elif current_node.has_any_children():  # interior
             successor = current_node.find_successor()
             successor.splice_out()
             current_node.key = successor.key
