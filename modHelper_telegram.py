@@ -23,6 +23,10 @@ def echo(message):
 def echo(call):
     user_id = call.message.chat.id
 
+    if user_id in communications:
+        bot.send_message(user_id, m_in_a_dialog)
+        return
+    
     if call.data == "module_mate":
         bot.send_message(user_id, "Please send your module code")
 
