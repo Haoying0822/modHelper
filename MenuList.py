@@ -10,16 +10,9 @@ def start_menu():
         text = "Find Study Buddy", callback_data = "study_buddy"
     )
 
-    """
-    callback3 = types.InlineKeyboardButton(
-        text = "Start a chat with user ID", callback_data = "resume_chat"
-    )
-    """
-
     menu = types.InlineKeyboardMarkup()
     menu.add(callback1)
     menu.add(callback2)
-    #menu.add(callback3)
 
     return menu
 
