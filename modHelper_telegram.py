@@ -28,7 +28,7 @@ def echo(call):
         return
     
     if call.data == "module_mate":
-        bot.send_message(user_id, "Please send your module code")
+        bot.send_message(user_id, "Please send your module code \nPlease type in CAPITAL letter:)")
 
     if call.data == "study_buddy":
         menu = faculty_menu()
