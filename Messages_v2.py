@@ -32,6 +32,8 @@ m_invalid_command = "😞 Sorry, we cannot recognise the content you have entere
 
 m_start_again = "To start a search, please select from below. "
 
+m_in_a_dialog = "😦 You are currently in a match. To start another session, please terminate this session first. \nPress the button below or type /stop to exit the current session."
+
 dislike_str = "⛔ Exit"
 
 like_str = "😊 Match and send username"
