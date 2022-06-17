@@ -26,7 +26,7 @@ def echo(call):
     if user_id in communications:
         bot.send_message(user_id, m_in_a_dialog)
         return
-    
+
     if call.data == "module_mate":
         bot.send_message(user_id, "Please send your module code \nPlease type in CAPITAL letter:)")
 
@@ -41,8 +41,15 @@ def echo(message):
     opt = message.text
     user_to_id = None
 
-    add_users(message.chat, opt)
+    if bot_users[user_id]:
+        bot.send_message(user_id, m_clash)
+        return
+    
+    if user_id in communications:
+        bot.send_message(user_id, m_in_a_dialog)
+        return
 
+    add_users(user_id, message.chat.username, opt)
 
     if not find_user(opt):
         bot.send_message(user_id, m_is_not_free_users)
@@ -138,6 +145,11 @@ def echo(message):
         tmp_id = communications[user_id]["UserTo"]
         delete_info(tmp_id)
 
+    if bot_users[user_id]["state"] == 0:
+        out_users[option_dict[bot_users[user_id]["Option"]]] -= 1
+    if bot_users[user_id]["state"] == 1:
+        in_users[option_dict[bot_users[user_id]["Option"]]] -= 1
+
     delete_user_from_db(user_id)
 
     bot.send_message(user_id, m_good_bye)
@@ -170,6 +182,8 @@ def echo(message):
         if (
             message.text != "/start"
             and message.text != "/stop"
+            and message.text != "Find Module Mate"
+            and message.text != "study_buddy"
             and message.text != dislike_str
             and message.text != like_str
             and message.text not in option
