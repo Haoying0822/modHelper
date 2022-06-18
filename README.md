@@ -18,5 +18,5 @@ Locating fellow students in the same module and finding project group mates or s
 
 **Features -- A Reddit Bot and a Telegram Bot**
 
-Reddit bot - automated replies to posts looking for modules' telegroup links on r/NUS.
-Telegram bot - random matching for students based on requirements for project mates (based on module) and study buddies (based on faculty).
+- Reddit bot - automated replies to posts looking for modules' telegroup links on r/NUS.
+- Telegram bot - random matching for students based on requirements for project mates (based on module) and study buddies (based on faculty).
