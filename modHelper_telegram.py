@@ -35,7 +35,7 @@ def echo(call):
         bot.send_message(user_id, "Please select your faculty", reply_markup = menu)
 
 
-@bot.message_handler(func = lambda message: message.text in option)
+@bot.message_handler(func = lambda message: message.text in option_dict.keys())
 def echo(message):
     user_id = message.chat.id
     opt = message.text
@@ -186,7 +186,7 @@ def echo(message):
             and message.text != "study_buddy"
             and message.text != dislike_str
             and message.text != like_str
-            and message.text not in option
+            and message.text not in option_dict.keys()
         ):
 
             if not connect_user(user_id):
