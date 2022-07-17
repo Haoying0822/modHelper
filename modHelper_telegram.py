@@ -6,7 +6,6 @@ from MenuList import *
 from Option import *
 from pairEngine import *
 
-TOKEN = "YOUR TOKEN HERE"
 bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands = ["start"])
@@ -26,17 +25,34 @@ def echo(call):
     if user_id in communications:
         bot.send_message(user_id, m_in_a_dialog)
         return
+    
+    if call.data == "module_info":
+        msg = bot.send_message(user_id, "Please send your module code \nPlease type in CAPITAL letter:)")
+        bot.register_next_step_handler(msg, module_info_handler)
+
+    if call.data == "module_group":
+        bot.send_message(user_id, "You may find your module group on this website: https://telenus.nusmods.com/")
 
     if call.data == "module_mate":
-        bot.send_message(user_id, "Please send your module code \nPlease type in CAPITAL letter:)")
-
+        msg = bot.send_message(user_id, "Please send your module code \nPlease type in CAPITAL letter:)")
+        bot.register_next_step_handler(msg, module_mate_handler)
+       
     if call.data == "study_buddy":
         menu = faculty_menu()
-        bot.send_message(user_id, "Please select your faculty", reply_markup = menu)
-
+        msg = bot.send_message(user_id, "Please select your faculty", reply_markup = menu)
+        bot.register_next_step_handler(msg, module_mate_handler)
 
 @bot.message_handler(func = lambda message: message.text in option_dict.keys())
-def echo(message):
+def module_info_handler(message):
+    module_code = message.text
+    if module_code in option_dict.keys():
+        module_info = f"{module_code} SUCCESS"
+        bot.send_message(message.chat.id, module_info)
+    else:
+        msg = bot.send_message(message.chat.id, "Sorry, this is not a valid module code. Please try again :)")
+        bot.register_next_step_handler(msg, module_info_handler)
+
+def module_mate_handler(message):
     user_id = message.chat.id
     opt = message.text
     user_to_id = None
