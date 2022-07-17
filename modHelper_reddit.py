@@ -7,7 +7,7 @@ import requests
 import os
 
 reddit = praw.Reddit('modHelper')
-subreddit = reddit.subreddit("pythonforengineers") #currently we are testing our bot in this subreddit, after completed we will move to r/nus
+subreddit = reddit.subreddit("nus") #currently we are testing our bot in this subreddit, after completed we will move to r/nus
 
 while True:
     
@@ -24,14 +24,7 @@ while True:
             for com in sub.comments:
                 if re.search("u/modHelper", com.body, re.IGNORECASE):
                     if re.search("tele", com.body, re.IGNORECASE): #this part need to collaborate with TeleNUS side
-                        module_code = com.body.split()[-1]
-                        html_content = requests.request("GET", "https://telenus.nusmods.com/", verify = False).text
-                        matches = re.findall(module_code, html_content)
-                        if len(matches) == 0:
-                          noTele_replyMsg = "The telegram group for module {0} is not found. You may follow the instructions here to create a group yourself: https://telenus.nusmods.com/".format(module_code)
-                          com.reply(body = noTele_replyMsg)
-                        else:
-                          com.reply(body = module_code)
+                          com.reply(body = "You may find your module group on this website: https://telenus.nusmods.com/ ^(This action is performed by a bot)")
 
                     elif re.search("mate", com.body, re.IGNORECASE):
                         com.reply(body = "You may wish to find your ideal groupmate in our telegram bot via this link: http://t.me/ModHelper_Bot ^(This action is performed by a bot)")
