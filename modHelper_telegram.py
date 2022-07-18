@@ -5,6 +5,7 @@ from Messages_v2 import *
 from MenuList import *
 from Option import *
 from pairEngine import *
+from ModuleInfo import *
 
 bot = telebot.TeleBot(TOKEN)
 
@@ -31,7 +32,8 @@ def echo(call):
         bot.register_next_step_handler(msg, module_info_handler)
 
     if call.data == "module_group":
-        bot.send_message(user_id, "You may find your module group on this website: https://telenus.nusmods.com/")
+        bot.send_message(user_id, "You may find your module's telegram group on the TeleNUS website: https://telenus.nusmods.com/")
+        bot.send_message(user_id, m_play_again)
 
     if call.data == "module_mate":
         msg = bot.send_message(user_id, "Please send your module code \nPlease type in CAPITAL letter:)")
@@ -43,13 +45,18 @@ def echo(call):
         bot.register_next_step_handler(msg, module_mate_handler)
 
 @bot.message_handler(func = lambda message: message.text in option_dict.keys())
+def general_case(message):
+    user_id = message.chat.id
+    bot.send_message(user_id, m_invalid_command, reply_markup = start_menu())
+
 def module_info_handler(message):
     module_code = message.text
     if module_code in option_dict.keys():
-        module_info = f"{module_code} SUCCESS"
+        module_info = search_modinfo(module_code)
         bot.send_message(message.chat.id, module_info)
+        bot.send_message(message.chat.id, m_play_again)
     else:
-        msg = bot.send_message(message.chat.id, "Sorry, this is not a valid module code. Please try again :)")
+        msg = bot.send_message(message.chat.id, "Sorry, the input module code is invalid. Please check and try again :)")
         bot.register_next_step_handler(msg, module_info_handler)
 
 def module_mate_handler(message):
@@ -63,6 +70,10 @@ def module_mate_handler(message):
     
     if user_id in communications:
         bot.send_message(user_id, m_in_a_dialog)
+        return
+    
+    if message.chat.username == None:
+        bot.send_message(user_id, m_is_not_user_name)
         return
 
     add_users(user_id, message.chat.username, opt)
@@ -170,7 +181,7 @@ def echo(message):
 
     bot.send_message(user_id, m_good_bye)
     menu = start_menu()
-    bot.send_message(user_id, m_play_again, reply_markup = menu)
+    bot.send_message(user_id, m_play_again)
 
 @bot.message_handler(
     content_types=["text", "sticker", "photo"]
