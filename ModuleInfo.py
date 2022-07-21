@@ -31,9 +31,12 @@ def search_modinfo(moduleCode):
             except KeyError:
                 output = output + "<b>Corequisite: </b>None\n\n"
 
-            output = output + "<b>Workload: </b>\n - " + str(MOD["workload"][0]) + "h in lectures\n - " + str(MOD["workload"][1]) + "h in tutorials\n - " + str(MOD["workload"][2]) + "h at the lab\n - " + str(MOD["workload"][3]) + "h doing project work\n - " + str(MOD["workload"][4]) + "h preparing for classes\n\n"
+            try:
+                output = output + "<b>Workload: </b>\n - " + str(MOD["workload"][0]) + "h in lectures\n - " + str(MOD["workload"][1]) + "h in tutorials\n - " + str(MOD["workload"][2]) + "h at the lab\n - " + str(MOD["workload"][3]) + "h doing project work\n - " + str(MOD["workload"][4]) + "h preparing for classes\n\n"
+            except KeyError:
+                output = output + "<b>Workload: </b>Sorry, we are unable to provide the workload for this module now.\n\n"
 
-            output = output + "<b>Description: </b>" + MOD["description"] + "\n\n"
+            output = output + "<b>Description: </b>\n" + MOD["description"] + "\n\n"
 
             output = output + "This information is generated from <a href='https://nusmods.com'>NUSMods</a>. For more details, please go to https://nusmods.com/modules/" + moduleCode + "/"
     return output
