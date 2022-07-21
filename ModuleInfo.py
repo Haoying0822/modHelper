@@ -10,30 +10,30 @@ def search_modinfo(moduleCode):
     output = ""
     for MOD in MODINFO:
         if MOD["moduleCode"] == moduleCode:
-            output = output + "Module Code: " + MOD["moduleCode"] + "\n"
-            output = output + "Title: " + MOD["title"] + "\n"
-            output = output + "Faculty: " + MOD["faculty"] + "\n"
-            output = output + "Department: " + MOD["department"] + "\n\n"
-            output = output + "Module Credit: " + MOD["moduleCredit"] + "\n"
-            #output = output + "Prerequisite: " + MOD["prerequisite"] + "\n"
+            output = output + "<b>Module Code: </b>" + MOD["moduleCode"] + "\n"
+            output = output + "<b>Title: </b>" + MOD["title"] + "\n"
+            output = output + "<b>Faculty: </b>" + MOD["faculty"] + "\n"
+            output = output + "<b>Department: </b>" + MOD["department"] + "\n\n"
+            output = output + "<b>Module Credit: </b>" + MOD["moduleCredit"] + "\n"
 
             try:
-                output = output + "Prerequisite: " + MOD["prerequisite"] + "\n"
+                output = output + "<b>Prerequisite: </b>" + MOD["prerequisite"] + "\n"
             except KeyError:
-                output = output + "Prerequisite: None\n"
+                output = output + "<b>Prerequisite: </b>None\n"
             
             try:
-                output = output + "Preclusion: " + MOD["preclusion"] + "\n"
+                output = output + "<b>Preclusion: </b>" + MOD["preclusion"] + "\n"
             except KeyError:
-                output = output + "Preclusion: None\n"
+                output = output + "<b>Preclusion: </b>None\n"
 
             try:
-                output = output + "Corequisite: " + MOD["corequisite"] + "\n\n"
+                output = output + "<b>Corequisite: </b>" + MOD["corequisite"] + "\n\n"
             except KeyError:
-                output = output + "Corequisite: None\n\n"
+                output = output + "<b>Corequisite: </b>None\n\n"
 
+            output = output + "<b>Workload: </b>\n - " + str(MOD["workload"][0]) + "h in lectures\n - " + str(MOD["workload"][1]) + "h in tutorials\n - " + str(MOD["workload"][2]) + "h at the lab\n - " + str(MOD["workload"][3]) + "h doing project work\n - " + str(MOD["workload"][4]) + "h preparing for classes\n\n"
 
-            output = output + "Description: " + MOD["description"]
+            output = output + "<b>Description: </b>" + MOD["description"] + "\n\n"
+
+            output = output + "This information is generated from <a href='https://nusmods.com'>NUSMods</a>. For more details, please go to https://nusmods.com/modules/" + moduleCode + "/"
     return output
-
-#print(search_modinfo("MA2001"))
