@@ -19,6 +19,37 @@ def echo(message):
 
     bot.send_message(user_id, m_start, reply_markup=menu)
 
+@bot.message_handler(commands = ["help"])
+def echo(message):
+    message.chat.type = "private"
+    user_id = message.chat.id
+
+    bot.send_message(user_id, m_help, parse_mode = ParseMode.HTML)
+
+@bot.message_handler(commands=["stop"])
+def echo(message):
+    menu = types.ReplyKeyboardRemove()
+    user_id = message.chat.id
+
+    if message.chat.id in communications:
+
+        bot.send_message(
+            communications[user_id]["UserTo"], m_disconnect_user, reply_markup = menu
+        )
+
+        tmp_id = communications[user_id]["UserTo"]
+        delete_info(tmp_id)
+
+    if bot_users[user_id]["state"] == 0:
+        out_users[option_dict[bot_users[user_id]["Option"]]] -= 1
+    if bot_users[user_id]["state"] == 1:
+        in_users[option_dict[bot_users[user_id]["Option"]]] -= 1
+
+    delete_user_from_db(user_id)
+
+    bot.send_message(user_id, m_good_bye)
+    menu = start_menu()
+    bot.send_message(user_id, m_play_again)
 
 @bot.callback_query_handler(func = lambda call: True)
 def echo(call):
@@ -29,7 +60,7 @@ def echo(call):
         return
     
     if call.data == "module_info":
-        msg = bot.send_message(user_id, "Please send your module code \nPlease type in CAPITAL letter:)")
+        msg = bot.send_message(user_id, "Please send your module code:)")
         bot.register_next_step_handler(msg, module_info_handler)
 
     if call.data == "module_group":
@@ -37,12 +68,12 @@ def echo(call):
         bot.send_message(user_id, m_play_again)
 
     if call.data == "module_mate":
-        msg = bot.send_message(user_id, "Please send your module code \nPlease type in CAPITAL letter:)")
+        msg = bot.send_message(user_id, "Please send your module code:)")
         bot.register_next_step_handler(msg, module_mate_handler)
        
     if call.data == "study_buddy":
         menu = faculty_menu()
-        msg = bot.send_message(user_id, "Please select your faculty", reply_markup = menu)
+        msg = bot.send_message(user_id, "Please select your faculty:)", reply_markup = menu)
         bot.register_next_step_handler(msg, module_mate_handler)
 
 @bot.message_handler(func = lambda message: message.text in option_dict.keys())
@@ -51,21 +82,26 @@ def general_case(message):
     bot.send_message(user_id, m_invalid_command, reply_markup = start_menu())
 
 def module_info_handler(message):
-    module_code = message.text
-    if module_code in faculty:
-        msg = bot.send_message(message.chat.id, "Sorry, the input module code is invalid. Please check and try again.\n\nRemember that you need to type in capital letter:)")
+    module_code = message.text.upper()
+    if message.text == "/stop":
+        bot.send_message(message.chat.id, m_start_again, reply_markup = start_menu())
+
+    elif module_code in faculty:
+        msg = bot.send_message(message.chat.id, "Sorry, the input module code is invalid. Please check and try again or press /stop to exit search.")
         bot.register_next_step_handler(msg, module_info_handler)
     elif module_code in option_dict.keys():
         module_info = search_modinfo(module_code)
         bot.send_message(message.chat.id, module_info, parse_mode = ParseMode.HTML)
         bot.send_message(message.chat.id, m_play_again)
     else:
-        msg = bot.send_message(message.chat.id, "Sorry, the input module code is invalid. Please check and try again.\n\nRemember that you need to type in capital letter:)")
+        msg = bot.send_message(message.chat.id, "Sorry, the input module code is invalid. Please check and try again or press /stop to exit search.")
         bot.register_next_step_handler(msg, module_info_handler)
 
 def module_mate_handler(message):
     user_id = message.chat.id
-    opt = message.text
+    if message.text in faculty: opt = message.text
+    else: opt = message.text.upper()
+    
     user_to_id = None
 
     if bot_users[user_id]:
@@ -78,6 +114,10 @@ def module_mate_handler(message):
     
     if message.chat.username == None:
         bot.send_message(user_id, m_is_not_user_name)
+        return
+    
+    if message.text not in option_dict.keys():
+        bot.send_message(user_id, m_invalid_command, reply_markup = start_menu())
         return
 
     add_users(user_id, message.chat.username, opt)
@@ -160,31 +200,6 @@ def echo(message):
         menu = start_menu()
         bot.send_message(user_id, m_play_again)
         bot.send_message(user_to_id, m_play_again)
-
-@bot.message_handler(commands=["stop"])
-def echo(message):
-    menu = types.ReplyKeyboardRemove()
-    user_id = message.chat.id
-
-    if message.chat.id in communications:
-
-        bot.send_message(
-            communications[user_id]["UserTo"], m_disconnect_user, reply_markup = menu
-        )
-
-        tmp_id = communications[user_id]["UserTo"]
-        delete_info(tmp_id)
-
-    if bot_users[user_id]["state"] == 0:
-        out_users[option_dict[bot_users[user_id]["Option"]]] -= 1
-    if bot_users[user_id]["state"] == 1:
-        in_users[option_dict[bot_users[user_id]["Option"]]] -= 1
-
-    delete_user_from_db(user_id)
-
-    bot.send_message(user_id, m_good_bye)
-    menu = start_menu()
-    bot.send_message(user_id, m_play_again)
 
 @bot.message_handler(
     content_types=["text", "sticker", "photo"]
