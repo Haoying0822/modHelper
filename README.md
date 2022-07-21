@@ -20,12 +20,15 @@ Locating fellow students in the same module and finding project group mates or s
 **Features -- A Telegram Bot**
 
 Search Module Info
+
 Send the module code and receive the module's information, including description, preclusion and workload generated from NUSMods.
 
 Find Module Group
+
 Receive the link to TeleNUS, where you can find all NUS-related Telegram groups.
 
 Find Module Mate & Find Study Buddy
+
 Send us the module code or select the faculty that you wish to find a module mate or study buddy. We will immediately start searching for a module mate for you. This process may need some time as other users are still on the way!
 We will send a message you once the matching is done and from now on you can chat with your module mate anonymously in our bot. Once both users agree to match with each other, the bot will exchange the username for you and chat in the bot will be ended.
 You can always opt to stop searching or exit from the chat:)
