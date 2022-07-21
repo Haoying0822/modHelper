@@ -1,9 +1,7 @@
 m_start = "Hello, welcome to modHelper. This is a bot aiming to help NUS students on anything and everything related to our modules. Here, you can find information, tele groups and mates based on module code. You can also match with study buddies based on your major. To start, press any of the buttons below. "
 
-#m_chat_start = "💯  Welcome to modHelper's matching session! \n\n 🖥  We hope you find a satisfactory mate/buddy here! \n\n ⚠️  To protect your safety, all chats are to remain anonymous and usernames will only be revealed when both parties agree! \n\n ⏩  To start searching for a match, please press the button New Chat"
-
 m_is_not_free_users = (
-    "Got it! We have began searching for your perfect match! However, this might take a while...... \n\nTo keep searching, please check your notificatitons and come back later. \n\nTo exit this search, please type command /stop. "
+    "Got it! We have began searching for your perfect match! However, this might take a while...... \n\nTo keep searching, please check your notificatitons and come back later. \n\nTo exit this search, please press /stop. "
 )
 
 m_clash = "You are currently in a search session. To start searching for a new match, please press /stop to stop the ongoing session first."
