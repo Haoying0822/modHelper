@@ -1,6 +1,7 @@
 from certifi import contents
 import telebot
 
+from telegram import ParseMode
 from Messages_v2 import *
 from MenuList import *
 from Option import *
@@ -51,12 +52,15 @@ def general_case(message):
 
 def module_info_handler(message):
     module_code = message.text
-    if module_code in option_dict.keys():
+    if module_code in faculty:
+        msg = bot.send_message(message.chat.id, "Sorry, the input module code is invalid. Please check and try again.\n\nRemember that you need to type in capital letter:)")
+        bot.register_next_step_handler(msg, module_info_handler)
+    elif module_code in option_dict.keys():
         module_info = search_modinfo(module_code)
-        bot.send_message(message.chat.id, module_info)
+        bot.send_message(message.chat.id, module_info, parse_mode = ParseMode.HTML)
         bot.send_message(message.chat.id, m_play_again)
     else:
-        msg = bot.send_message(message.chat.id, "Sorry, the input module code is invalid. Please check and try again :)")
+        msg = bot.send_message(message.chat.id, "Sorry, the input module code is invalid. Please check and try again.\n\nRemember that you need to type in capital letter:)")
         bot.register_next_step_handler(msg, module_info_handler)
 
 def module_mate_handler(message):
@@ -79,12 +83,12 @@ def module_mate_handler(message):
     add_users(user_id, message.chat.username, opt)
 
     if not find_user(opt):
-        bot.send_message(user_id, m_is_not_free_users)
+        bot.send_message(user_id, m_is_not_free_users, reply_markup = types.ReplyKeyboardRemove())
         print("not enough user")
         return
     
     if bot_users[user_id]["state"] == 0:
-        bot.send_message(user_id, m_is_not_free_users)
+        bot.send_message(user_id, m_is_not_free_users, reply_markup = types.ReplyKeyboardRemove())
         print("matching failed")
         return    
 
@@ -98,7 +102,7 @@ def module_mate_handler(message):
                     break
     
     if user_to_id is None:
-        bot.send_message(user_id, m_is_not_free_users)
+        bot.send_message(user_id, m_is_not_free_users, reply_markup = types.ReplyKeyboardRemove())
         return
     
     add_communications(user_id, user_to_id)
@@ -113,8 +117,7 @@ def connect_user(user_id):
     if user_id in communications:
         return True
     else:
-        bot.send_message(user_id, m_invalid_command)
-        bot.send_message(user_id, m_start_again, reply_markup = start_menu())
+        bot.send_message(user_id, m_invalid_command, reply_markup = start_menu())
         return False
 
 
@@ -155,8 +158,8 @@ def echo(message):
     if flag:
         delete_info(user_to_id)
         menu = start_menu()
-        bot.send_message(user_id, m_play_again, reply_markup = menu)
-        bot.send_message(user_to_id, m_play_again, reply_markup = menu)
+        bot.send_message(user_id, m_play_again)
+        bot.send_message(user_to_id, m_play_again)
 
 @bot.message_handler(commands=["stop"])
 def echo(message):
@@ -209,8 +212,6 @@ def echo(message):
         if (
             message.text != "/start"
             and message.text != "/stop"
-            and message.text != "Find Module Mate"
-            and message.text != "study_buddy"
             and message.text != dislike_str
             and message.text != like_str
             and message.text not in option_dict.keys()
