@@ -24,7 +24,7 @@ print(ALL_DATA)
 
 """
 
-
+faculty = ['Alice Lee Centre for Nursing Studies', 'Business School', 'College of Design and Engineering', 'College of Humanities and Sciences - FASS', 'College of Humanities and Sciences - FoS', 'Faculty of Dentistry', 'Faculty of Law', 'School of Computing', 'Yong Loo Lin School of Medicine', 'Yong Siew Toh Conservatory of Music', 'NUS College']
 
 option_dict = {'Alice Lee Centre for Nursing Studies': 0, 'Business School': 1, 'College of Design and Engineering': 2, 'College of Humanities and Sciences - FASS': 3, 'College of Humanities and Sciences - FoS': 4, 'Faculty of Dentistry': 5, 'Faculty of Law': 6, 'School of Computing': 7, 'Yong Loo Lin School of Medicine': 8, 'Yong Siew Toh Conservatory of Music': 9, 'NUS College': 10,
 'AC5001': 11, 'AC5002': 12, 'AC5003': 13, 'AC5004': 14, 'AC5005': 15, 'AC5006': 16, 'AC5007': 17, 'AC5008': 18, 'AC5009': 19, 'AC5010': 20, 'AC5011': 21, 'AC5012': 22, 'AC5014': 23, 'ACC1701': 24, 'ACC1701X': 25, 'ACC2706': 26, 'ACC2707': 27, 'ACC2708': 28, 'ACC2709': 
