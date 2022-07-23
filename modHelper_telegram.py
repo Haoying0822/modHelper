@@ -28,27 +28,36 @@ def echo(message):
 
 @bot.message_handler(commands=["stop"])
 def echo(message):
-    menu = types.ReplyKeyboardRemove()
     user_id = message.chat.id
 
     if message.chat.id in communications:
 
         bot.send_message(
-            communications[user_id]["UserTo"], m_disconnect_user, reply_markup = menu
+            communications[user_id]["UserTo"], m_disconnect_user, reply_markup = start_menu()
         )
 
         tmp_id = communications[user_id]["UserTo"]
         delete_info(tmp_id)
 
-    if bot_users[user_id]["state"] == 0:
-        out_users[option_dict[bot_users[user_id]["Option"]]] -= 1
-    if bot_users[user_id]["state"] == 1:
-        in_users[option_dict[bot_users[user_id]["Option"]]] -= 1
+        print("in communication -- stop")
+
+
+    try:
+        if bot_users[user_id]["state"] == 0:
+            out_users[option_dict[bot_users[user_id]["Option"]]] -= 1
+        if bot_users[user_id]["state"] == 1:
+            in_users[option_dict[bot_users[user_id]["Option"]]] -= 1
+        
+        print("start searching but not success -- stop")
+    except TypeError:
+        bot.send_message(message.chat.id, m_start_again, reply_markup = start_menu())  
+        print("none sense stop")
+        return
+
 
     delete_user_from_db(user_id)
 
     bot.send_message(user_id, m_good_bye)
-    menu = start_menu()
     bot.send_message(user_id, m_play_again)
 
 @bot.callback_query_handler(func = lambda call: True)
@@ -85,6 +94,7 @@ def module_info_handler(message):
     module_code = message.text.upper()
     if message.text == "/stop":
         bot.send_message(message.chat.id, m_start_again, reply_markup = start_menu())
+        print("stop from searching module info session")
 
     elif module_code in faculty:
         msg = bot.send_message(message.chat.id, "Sorry, the input module code is invalid. Please check and try again or press /stop to exit search.")
@@ -99,8 +109,12 @@ def module_info_handler(message):
 
 def module_mate_handler(message):
     user_id = message.chat.id
-    if message.text in faculty: opt = message.text
-    else: opt = message.text.upper()
+    if message.text in faculty: 
+        opt = message.text
+    else: 
+        opt = message.text.upper()
+    
+    print(opt)
     
     user_to_id = None
 
@@ -116,7 +130,7 @@ def module_mate_handler(message):
         bot.send_message(user_id, m_is_not_user_name)
         return
     
-    if message.text not in option_dict.keys():
+    if opt not in option_dict.keys():
         bot.send_message(user_id, m_invalid_command, reply_markup = start_menu())
         return
 
@@ -197,7 +211,6 @@ def echo(message):
 
     if flag:
         delete_info(user_to_id)
-        menu = start_menu()
         bot.send_message(user_id, m_play_again)
         bot.send_message(user_to_id, m_play_again)
 
