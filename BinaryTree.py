@@ -27,10 +27,10 @@ class TreeNode:
     def has_any_children(self):
         return self.leftChild or self.rightChild
 
-    def has_all_children(self):
+    def hasBothChildren(self):
         return self.leftChild and self.rightChild
 
-    def replace_data(self, key, val, lc, rc):
+    def replaceNodeData(self, key, val, lc, rc):
         self.key = key
         self.val = val
         self.leftChild = lc
@@ -117,11 +117,11 @@ class BinaryTree:
 
     def find_successor(self):
         successor = None
-        if self.has_right_child():
+        if self.hasRightChild():
             successor = self.rightChild.find_min()
         else:
             if self.parent:
-                if self.is_left_child():
+                if self.isLeftChild():
                     successor = self.parent
                 else:
                     self.parent.rightChild = None
@@ -131,25 +131,25 @@ class BinaryTree:
 
     def find_min(self):
         current = self
-        while current.has_left_child():
+        while current.hasLeftChild():
             current = current.leftChild
         return current
 
     def splice_out(self):
         if self.isLeaf():
-            if self.is_left_child():
+            if self.isLeftChild():
                 self.parent.leftChild = None
             else:
                 self.parent.rightChild = None
-        elif self.has_any_children():
-            if self.has_left_child():
-                if self.is_left_child():
+        elif self.hasAnyChildren():
+            if self.hasLeftChild():
+                if self.isLeftChild():
                     self.parent.leftChild = self.leftChild
                 else:
                     self.parent.rightChild = self.leftChild
                 self.leftChild.parent = self.parent
             else:
-                if self.is_left_child():
+                if self.isLeftChild():
                     self.parent.leftChild = self.rightChild
                 else:
                     self.parent.rightChild = self.rightChild
@@ -161,11 +161,11 @@ class BinaryTree:
                 current_node.parent.leftChild = None
             else:
                 current_node.parent.rightChild = None
-        elif current_node.has_any_children():  # interior
+        elif current_node.hasBothChildren():  # interior
             successor = current_node.find_successor()
             successor.splice_out()
             current_node.key = successor.key
-            current_node.payload = successor.payload
+            current_node.val = successor.val
         else:
             if current_node.has_left_child():
                 if current_node.is_left_child():
@@ -177,7 +177,7 @@ class BinaryTree:
                 else:
                     current_node.replaceNodeData(
                         current_node.leftChild.key,
-                        current_node.leftChild.payload,
+                        current_node.leftChild.val,
                         current_node.leftChild.leftChild,
                         current_node.leftChild.rightChild,
                     )
@@ -191,7 +191,7 @@ class BinaryTree:
                 else:
                     current_node.replaceNodeData(
                         current_node.rightChild.key,
-                        current_node.rightChild.payload,
+                        current_node.rightChild.val,
                         current_node.rightChild.leftChild,
                         current_node.rightChild.rightChild,
                     )
